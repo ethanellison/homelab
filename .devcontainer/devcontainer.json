@@ -1,6 +1,6 @@
 {
   "name": "K3s GitOps Dev Environment",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04", // Or your preferred base image
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu", // Or your preferred base image
 
   "features": {
     "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
@@ -49,7 +49,7 @@
       ]
     }
   },
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install --yes zsh && chsh -s /usr/bin/zsh vscode",
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install --yes",
   "forwardPorts": [],
   "portsAttributes": {
     "3000": {
