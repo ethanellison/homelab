@@ -1,9 +1,60 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "name": "K3s GitOps Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04", // Or your preferred base image
+
   "features": {
-    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
-    "ghcr.io/devcontainers-extra/features/neovim-homebrew:1": {},
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+      "version": "latest", // Use latest stable
+      "helmVersion": "3",
+      "minikubeVersion": "latest",
+      "enableKrew": true // Install Krew for kubectl plugins
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    }
   },
-  "forwardPorts": [8080]
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/usr/bin/zsh"
+          }
+        },
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "files.insertFinalNewline": true,
+        "files.trimTrailingWhitespace": true,
+        "files.exclude": {
+          "**/charts/*/templates/*": true,
+          "**/charts/*/values.yaml": true
+        }
+      },
+      "extensions": [
+        "ms-azuretools.vscode-kubernetes-tools", // Kubernetes extension
+        "esbenp.prettier-vscode",         // Code formatting
+        "yamlls.yaml-language-server",      // YAML language support
+        "redhat.vscode-yaml",              // Alternative YAML support
+        "ms-vscode.vscode-node-debug",     // Node debugger (if needed)
+        "eamodio.gitlens",                // Git lens
+        "GitHub.vscode-pull-request-github", // GitHub PR integration
+        "ms-kubernetes-tools.vscode-aks-tools",
+        "timonwong.shellcheck",
+        "mhutchie.git-graph"
+      ]
+    }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install --yes zsh && chsh -s /usr/bin/zsh vscode",
+  "forwardPorts": [],
+  "portsAttributes": {
+    "3000": {
+      "label": "Application"
+    }
+  },
+  "remoteUser": "vscode"
 }
