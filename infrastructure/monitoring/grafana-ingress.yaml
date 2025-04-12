@@ -5,7 +5,7 @@ metadata:
 spec:
   defaultBackend:
     service:
-      name: loki=grafana
+      name: loki-grafana
       port:
         number: 80
   ingressClassName: tailscale
