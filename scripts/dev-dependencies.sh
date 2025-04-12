@@ -3,7 +3,7 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-
+docker network create minikube || echo "Network 'minikube' already exists."
 # set git config
 git config --global user.email "e_21997@hotmail.com"
 git config --global user.name "e21997-dev"

@@ -9,6 +9,7 @@
   "forwardPorts": [8080],
   "postCreateCommand": "chmod +x ./scripts/dev-dependencies.sh && ./scripts/dev-dependencies.sh",
   "remoteUser": "vscode",
+  "privileged": true,
   "customizations": {
     "vscode": {
       "extensions": [
