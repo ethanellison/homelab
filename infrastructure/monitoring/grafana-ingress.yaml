@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Ingress
+metadata:
+  name: grafana
+spec:
+  defaultBackend:
+    service:
+      name: loki=grafana
+      port:
+        number: 80
+  ingressClassName: tailscale
+  tls:
+  - hosts:
+    - grafana
