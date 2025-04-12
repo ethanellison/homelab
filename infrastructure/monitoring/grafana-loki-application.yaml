@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: grafana-loki
+  name: loki
   namespace: argocd
 spec:
   project: default
@@ -11,12 +11,8 @@ spec:
     chart: loki-stack
     helm:
       parameters:
-        - name: grafana.enabled
-          value: "true"
-        - name: adminUser
-          value: "admin"
-        - name: adminPassword
-          value: "password"
+      - name: grafana.enabled
+        value: 'true'
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
