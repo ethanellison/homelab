@@ -4,12 +4,12 @@ metadata:
   name: grafana-loadbalancer
   namespace: monitoring
   labels:
-    app: grafana-loki
+    app: loki-grafana
 spec:
   type: LoadBalancer
   loadBalancerClass: "tailscale"
   selector:
-    app: grafana-loki
+    app: loki-grafana
   ports:
     - name: https
       port: 443
