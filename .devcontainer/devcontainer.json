@@ -2,7 +2,7 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
     "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
-    "ghcr.io/devcontainers-extra/features/neovim-homebrew:1": {},
+    "ghcr.io/devcontainers-extra/features/neovim-apt-get:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
   },
   "forwardPorts": [8080]
