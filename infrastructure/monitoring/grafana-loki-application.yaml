@@ -13,6 +13,10 @@ spec:
       parameters:
         - name: grafana.enabled
           value: "true"
+        - name: adminUser
+          value: "admin"
+        - name: adminPassword
+          value: "password"
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
