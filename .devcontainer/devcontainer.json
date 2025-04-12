@@ -4,6 +4,21 @@
     "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
     "ghcr.io/duduribeiro/devcontainer-features/neovim:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers-extra/features/argo-cd:1": {},
   },
-  "forwardPorts": [8080]
+  "forwardPorts": [8080],
+  "postCreateCommand": "chmod +x ./scripts/dev-dependencies.sh && ./scripts/dev-dependencies.sh",
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "redhat.vscode-yaml",
+        "esbenp.prettier-vscode",
+        "davidanson.vscode-markdownlint",
+        "ms-vscode-remote.remote-containers",
+      ]
+    }
+  },
 }
