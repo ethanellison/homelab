@@ -5,6 +5,7 @@
     "ghcr.io/duduribeiro/devcontainer-features/neovim:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers-extra/features/argo-cd:1": {},
+    "ghcr.io/devcontainers-extra/features/kind:1": {}
   },
   "forwardPorts": [8080],
   "postCreateCommand": "chmod +x ./scripts/dev-dependencies.sh && ./scripts/dev-dependencies.sh",

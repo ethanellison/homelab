@@ -2,15 +2,13 @@
 
 # Exit immediately if a command exits with a non-zero status
 set -e
-
-docker network create minikube || echo "Network 'minikube' already exists."
 # set git config
 git config --global user.email "e_21997@hotmail.com"
 git config --global user.name "e21997-dev"
 
-# Start Minikube
-echo "Starting Minikube..."
-minikube start --driver=docker
+# Start kind cluster
+echo "Starting kind cluster..."
+kind create cluster --name dev-cluster
 
 # Install ArgoCD Kubernetes manifests
 echo "Installing ArgoCD manifests..."
