@@ -10,7 +10,7 @@ git config --global user.name "e21997-dev"
 
 # Start Minikube
 echo "Starting Minikube..."
-minikube start
+minikube start --driver=docker
 
 # Install ArgoCD Kubernetes manifests
 echo "Installing ArgoCD manifests..."
