@@ -7,8 +7,8 @@ git config --global user.email "e_21997@hotmail.com"
 git config --global user.name "e21997-dev"
 
 # Start kind cluster
-echo "Starting kind cluster..."
-kind create cluster --name dev-cluster
+echo "Starting k3d cluster..."
+k3d cluster create dev-cluster
 
 # Install ArgoCD Kubernetes manifests
 echo "Installing ArgoCD manifests..."
@@ -26,4 +26,7 @@ argocd login cd.argoproj.io --core
 # Output ArgoCD admin password
 echo "ArgoCD admin password:"
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+# set ArgoCD admin password to env variable
+export ARGOCD_ADMIN_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 echo
