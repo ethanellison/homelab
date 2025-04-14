@@ -1,0 +1,3 @@
+# Architecture
+
+[tailscale](./tailscale.md)  
