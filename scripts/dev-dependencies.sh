@@ -6,7 +6,14 @@ set -e
 git config --global user.email "e_21997@hotmail.com"
 git config --global user.name "e21997-dev"
 
-# Start kind cluster
+# check for existing k3d cluster
+if k3d cluster list | grep -q "dev-cluster"; then
+    echo "k3d cluster 'dev-cluster' already exists. Deleting it..."
+    k3d cluster delete dev-cluster
+else
+    echo "No existing k3d cluster found."
+fi
+# Start k3d cluster
 echo "Starting k3d cluster..."
 k3d cluster create dev-cluster
 
@@ -29,4 +36,10 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 
 # set ArgoCD admin password to env variable
 export ARGOCD_ADMIN_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+
+# expose argoCD server
+echo "Exposing ArgoCD server..."
+kubectl port-forward svc/argocd-server -n argocd 8080:443 &
+
+
 echo
