@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  # Add paths to your Kubernetes manifests or other kustomization directories here
+  # Example:
+  # - deployment.yaml
+  # - service.yaml
+  - secret-manager
+  - tailscale
+  - monitoring
+  
+
+# patchesStrategicMerge:
+#   # Add paths to your patch files here if needed
+#   # Example:
+#   # - patch.yaml
+
+# configMapGenerator:
+#   # Add ConfigMap definitions here if needed
+#   # Example:
+#   # - name: example-config
+#   #   literals:
+#   #     - key1=value1
+#   #     - key2=value2
+
+# secretGenerator:
+#   # Add Secret definitions here if needed
+#   # Example:
+#   # - name: example-secret
+#   #   literals:
+#   #     - username=admin
+#   #     - password=secret
