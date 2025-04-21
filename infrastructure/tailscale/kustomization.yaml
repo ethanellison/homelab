@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  # Add your resource manifests here, e.g., deployment.yaml, service.yaml
+  - operator-secret.yaml
+  - tailscale-helm-chart.yaml
+
+# patchesStrategicMerge:
+#   # Add your patch files here, e.g., patch.yaml
+
+# configMapGenerator:
+#   # Example for generating ConfigMaps
+#   # - name: example-config
+#   #   literals:
+#   #     - key1=value1
+#   #     - key2=value2
+
+# secretGenerator:
+#   # Example for generating Secrets
+#   # - name: example-secret
+#   #   literals:
+#   #     - username=admin
+#   #     - password=secret
