@@ -1,4 +1,4 @@
 # Architecture
 
 [tailscale](./tailscale.md)  
-[secrets manager] (./
+[secrets manager] (./secret-manager.md)
