@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  # - eso-namespace.yaml
+  - eso-helm-chart.yaml
+  - gcp-secret-store.yaml
+
+  ## for testing
+  # - eso-service-account.yaml
+  # - gcp-sa-secret.yaml
+  # - external-secret.yaml
