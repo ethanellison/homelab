@@ -2,10 +2,11 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
     "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
-    "ghcr.io/duduribeiro/devcontainer-features/neovim:1": {},
+    "ghcr.io/devcontainers-extra/features/neovim-apt-get:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers-extra/features/argo-cd:1": {},
-    "ghcr.io/rio/features/k3d:1": {}
+    "ghcr.io/rio/features/k3d:1": {},
+    "ghcr.io/rio/features/k9s:1": {},
   },
   "forwardPorts": [8080],
   "postCreateCommand": "chmod +x ./scripts/dev-dependencies.sh && ./scripts/dev-dependencies.sh",

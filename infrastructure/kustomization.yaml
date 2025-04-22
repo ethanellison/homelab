@@ -9,7 +9,7 @@ resources:
   - secret-manager
   - tailscale
   - monitoring
-  
+  - cnpg
 
 # patchesStrategicMerge:
 #   # Add paths to your patch files here if needed
