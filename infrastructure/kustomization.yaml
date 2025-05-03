@@ -6,7 +6,7 @@ resources:
   # Example:
   # - deployment.yaml
   # - service.yaml
-  - secret-manager
+  - secret-manager/external-secrets-operator
   - tailscale
   - monitoring
   - cnpg
