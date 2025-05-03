@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   # - eso-namespace.yaml
   - eso-helm-chart.yaml
-  - gcp-secret-store.yaml
+  # - gcp-secret-store.yaml
 
   ## for testing
   # - eso-service-account.yaml
