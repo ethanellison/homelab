@@ -8,3 +8,4 @@ spec:
   chart: external-secrets
   version: 0.16.0
   targetNamespace: external-secrets
+  createNamespace: true
