@@ -5,6 +5,7 @@ set -e
 # set git config
 git config --global user.email "e_21997@hotmail.com"
 git config --global user.name "e21997-dev"
+git config pull.rebase true
 
 # check for existing k3d cluster
 if k3d cluster list | grep -q "dev-cluster"; then
