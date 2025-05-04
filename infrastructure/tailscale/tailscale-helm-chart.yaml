@@ -8,3 +8,4 @@ spec:
   chart: tailscale-operator
   version: v1.82.0
   targetNamespace: tailscale
+  createNamespace: true
