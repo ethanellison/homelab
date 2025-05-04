@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   # Add your resource manifests here, e.g., deployment.yaml, service.yaml
-  - operator-secret.yaml
   - tailscale-helm-chart.yaml
 
 # patchesStrategicMerge:
