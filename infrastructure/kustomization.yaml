@@ -8,7 +8,7 @@ resources:
   # - service.yaml
   - secret-manager/external-secrets-operator
   - tailscale-operator/tailscale-helm-chart.yaml
-  - monitoring
+  - monitoring/prometheus-stack.yaml
   - cnpg
 
 # patchesStrategicMerge:
