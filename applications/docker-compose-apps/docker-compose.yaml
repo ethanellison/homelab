@@ -11,5 +11,6 @@ services:
     volumes:
       - /opt/homeassistant/config:/config # TODO migrate from host storage to network volume 
       - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
     environment:
       TZ: America/Toronto
