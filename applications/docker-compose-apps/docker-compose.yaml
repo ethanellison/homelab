@@ -1,11 +1,11 @@
-version: '3.8'
+# version: '3.8'
 services:
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: homeassistant
     restart: unless-stopped
     privileged: true
-    network_mode: host
+    # network_mode: host
     ports:
       - 8123:8123
     volumes:
@@ -14,3 +14,25 @@ services:
       - /run/dbus:/run/dbus:ro
     environment:
       TZ: America/Toronto
+
+  broker:
+    image: docker.io/library/redis:8
+    restart: unless-stopped
+    volumes:
+      - /opt/paperless/redis:/data
+
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.17.1
+    restart: unless-stopped
+    depends_on:
+        broker
+    ports:
+      - 8000:8000
+    volumes:
+      - /opt/paperless/data:/usr/src/paperless/data
+      - /opt/paperless/media:/usr/src/paperless/media
+      - /opt/paperless/consume:/usr/src/paperless/consume
+      - /opt/paperless/export:/usr/src/paperless/export
+
+    environment:
+      PAPERLESS_REDIS: redis://broker:6379
