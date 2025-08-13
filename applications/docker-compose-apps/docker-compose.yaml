@@ -33,6 +33,6 @@ services:
       - /opt/paperless/media:/usr/src/paperless/media
       - /opt/paperless/consume:/usr/src/paperless/consume
       - /opt/paperless/export:/usr/src/paperless/export
-
+    env_file: docker-compose.env
     environment:
       PAPERLESS_REDIS: redis://broker:6379
