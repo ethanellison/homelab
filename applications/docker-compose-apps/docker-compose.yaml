@@ -1,9 +1,6 @@
 # version: '3.8'
-include:
-  - ./automation/compose.yaml
-
 services:
-  tailscale:
+  n8n-ts:
     extends:
       file: ./automation/compose.yaml
       service: n8n-ts
