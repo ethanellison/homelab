@@ -9,8 +9,6 @@ services:
       - TS_EXTRA_ARGS=--advertise-tags=tag:container
       - TS_STATE_DIR=/var/lib/tailscale
       - TS_SERVE_CONFIG=/config/n8n.json
-    volumes:
-      - n8n-ts:/var/lib/tailscale
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
@@ -40,5 +38,4 @@ services:
 volumes:
   n8n_data:
     driver: local
-  n8n-ts:
-    driver: local
+
