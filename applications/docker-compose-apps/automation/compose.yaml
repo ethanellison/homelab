@@ -6,7 +6,7 @@ services:
     hostname: n8n-ts
     env_file:
       - ../docker-compose.env
-      - ${N8N_DATA_FOLDER}/.env
+      - /opt/automation/.env
     environment:
       - TS_EXTRA_ARGS="--advertise-tags=tag:container"
       - TS_STATE_DIR=/var/lib/tailscale
@@ -36,4 +36,4 @@ services:
       - n8n-ts
       - initContainer
     volumes:
-      - ${N8N_DATA_FOLDER}/.n8n:/home/ethanellison/.n8n
+      - ${N8N_DATA_FOLDER}/.n8n:/home/node/.n8n
