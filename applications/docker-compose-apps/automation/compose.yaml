@@ -8,7 +8,7 @@ services:
       - ../docker-compose.env
       - ${N8N_DATA_FOLDER}/.env
     environment:
-      - TS_EXTRA_ARGS: --advertise-tags=tag:container
+      - TS_EXTRA_ARGS: "--advertise-tags=tag:container"
       - TS_STATE_DIR: /var/lib/tailscale
       - TS_SERVE_CONFIG: ./config.json
     volumes:
