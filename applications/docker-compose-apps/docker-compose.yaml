@@ -3,7 +3,7 @@ include:
   - ./automation/compose.yaml
 
 services:
-  n8n-ts:
+  tailscale:
     extends:
       file: ./automation/compose.yaml
       service: n8n-ts
