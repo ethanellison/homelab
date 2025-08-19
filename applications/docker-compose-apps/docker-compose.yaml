@@ -3,6 +3,13 @@ include:
   - ./automation/compose.yaml
 
 services:
+  n8n-ts:
+    extends:
+      file: ./automation/compose.yaml
+      service: n8n-ts
+    volumes:
+      - ./automation/config/:/config:ro
+
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: homeassistant
