@@ -11,7 +11,7 @@ services:
       - TS_SERVE_CONFIG=/config/n8n.json
     volumes:
       - n8n-ts:/var/lib/tailscale
-      - ./config:/config:ro
+      - ../automation/config:/config:ro
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
