@@ -29,9 +29,9 @@ services:
     container_name: n8n
     network_mode: service:n8n-ts
     depends_on:
-      n8n-ts:
-      initContainer:
-        condition: service_completed_successfully
+      - n8n-ts:
+      - initContainer:
+          condition: service_completed_successfully
     volumes:
       - n8n_data:/home/node/.n8n
 
