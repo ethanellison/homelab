@@ -3,7 +3,7 @@ services:
   n8n-ts:
     image: tailscale/tailscale:latest
     platform: linux/aarch64
-    hostname: n8n-ts
+    hostname: n8n
     environment:
       - TS_AUTHKEY=${TS_AUTHKEY}
       - TS_EXTRA_ARGS=--advertise-tags=tag:container
@@ -23,7 +23,7 @@ services:
       - n8n_data:/home/node/.n8n
 
   n8n:
-    image: docker.n8n.io/n8nio/n8n:1.106.3
+    image: docker.n8n.io/n8nio/n8n:1.107.3
     platform: linux/aarch64
     restart: always
     container_name: n8n
