@@ -4,16 +4,14 @@ services:
     image: tailscale/tailscale:latest
     platform: linux/aarch64
     hostname: n8n-ts
-    env_file:
-      - ../docker-compose.env
     environment:
       - TS_AUTHKEY=${TS_AUTHKEY}
       - TS_EXTRA_ARGS=--advertise-tags=tag:container
       - TS_STATE_DIR=/var/lib/tailscale
       - TS_SERVE_CONFIG=/config/n8n.json
     volumes:
-      - ${N8N_DATA_FOLDER}/tailscale:/var/lib/tailscale
-      - ${PWD}/config:/config
+      - n8n-ts:/var/lib/tailscale
+      - ./config:/config
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
@@ -21,13 +19,13 @@ services:
         - sys_module
     restart: unless-stopped
 
-  initContainer:
-    image: busybox
-    command: ['sh', '-c', 'chown -R 1000:1000 /home/node/.n8n']
-    env_file:
-      - ../docker-compose.env
-    volumes:
-      - ${N8N_DATA_FOLDER}/.n8n:/home/node/.n8n
+  # initContainer:
+  #   image: busybox
+  #   command: ['sh', '-c', 'chown -R 1000:1000 /home/node/.n8n']
+  #   env_file:
+  #     - ../docker-compose.env
+  #   volumes:
+  #     - ${N8N_DATA_FOLDER}/.n8n:/home/node/.n8n
 
   n8n:
     image: docker.n8n.io/n8nio/n8n:1.106.3
@@ -35,10 +33,13 @@ services:
     restart: always
     container_name: n8n
     network_mode: service:n8n-ts
-    env_file:
-      - ../docker-compose.env
     depends_on:
       - n8n-ts
-      - initContainer
     volumes:
-      - ${N8N_DATA_FOLDER}/.n8n:/home/node/.n8n
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:
+    driver: local
+  n8n-ts:
+    driver: local
