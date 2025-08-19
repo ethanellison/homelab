@@ -13,7 +13,7 @@ services:
       - TS_SERVE_CONFIG=/config/n8n.json
     volumes:
       - ${N8N_DATA_FOLDER}/tailscale:/var/lib/tailscale
-      - ./config:/config
+      - ${PWD}/config:/config
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
