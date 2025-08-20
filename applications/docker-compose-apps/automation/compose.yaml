@@ -16,7 +16,7 @@ services:
         - sys_module
     volumes:
       - n8n-ts:/var/lib/tailscale
-      - ./automation/config:/config
+      - ./config:/config
     restart: unless-stopped
 
   initContainer:
