@@ -37,4 +37,9 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
 
+volumes:
+  n8n_data:
+    driver: local
+  n8n-ts:
+    driver: local
 

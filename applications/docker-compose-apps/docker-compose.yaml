@@ -1,13 +1,5 @@
 # version: '3.8'
 services:
-  n8n-ts:
-    extends:
-      file: ./automation/compose.yaml
-      service: n8n-ts
-  n8n:
-    extends:
-      file: ./automation/compose.yaml
-      service: n8n
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: homeassistant
@@ -45,8 +37,4 @@ services:
     environment:
       PAPERLESS_REDIS: redis://broker:6379
 
-volumes:
-  n8n_data:
-    driver: local
-  n8n-ts:
-    driver: local
+
