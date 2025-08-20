@@ -4,6 +4,10 @@ services:
     extends:
       file: ./automation/compose.yaml
       service: n8n-ts
+  n8n:
+    extends:
+      file: ./automation/compose.yaml
+      service: n8n
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: homeassistant
