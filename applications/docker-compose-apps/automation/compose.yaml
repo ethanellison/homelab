@@ -14,6 +14,10 @@ services:
     cap_add:
         - net_admin
         - sys_module
+    volumes:
+      - n8n-ts:/var/lib/tailscale
+      - ./automation/config:/config
+
     restart: unless-stopped
 
   initContainer:
@@ -37,4 +41,5 @@ services:
 volumes:
   n8n_data:
     driver: local
-
+  n8n-ts:
+    driver: local

@@ -4,10 +4,6 @@ services:
     extends:
       file: ./automation/compose.yaml
       service: n8n-ts
-    volumes:
-      - n8n-ts:/var/lib/tailscale
-      - ./automation/config:/config:ro
-
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: homeassistant
@@ -44,7 +40,3 @@ services:
     env_file: docker-compose.env
     environment:
       PAPERLESS_REDIS: redis://broker:6379
-
-volumes:
-  n8n-ts:
-    driver: local
