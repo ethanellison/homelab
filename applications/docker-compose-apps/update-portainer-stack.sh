@@ -9,7 +9,7 @@ ENDPOINT_ID="${ENDPOINT_ID:-1}"
 # === DYNAMIC PATHS ===
 # Detect repo path as current working directory
 REPO_PATH="$(pwd)"
-STACK_FILE="$REPO_PATH/applications/docker-compose-apps/docker-compose.yaml"
+STACK_FILE="$REPO_PATH/docker-compose.yaml"
 STACK_NAME="$(basename "$REPO_PATH")" # use repo folder name as stack name
 
 if [ ! -f "$STACK_FILE" ]; then
@@ -59,7 +59,7 @@ else
     -H "x-api-key: $PORTAINER_API_KEY" \
     -F "Name=$STACK_NAME" \
     -F "file=@$STACK_FILE" \
-    -F 'Env=[]' \
-  | jq '.'
+    -F 'Env=[]' |
+    jq '.'
   echo "[INFO] Stack '$STACK_NAME' created successfully."
 fi
