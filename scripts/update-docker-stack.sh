@@ -55,13 +55,11 @@ if [ -n "$STACK_ID" ] && [ "$STACK_ID" != "null" ]; then
 else
   echo "[INFO] Stack not found. Creating..."
   curl -s -X POST \
-    "$PORTAINER_URL/api/stacks?type=2&method=string&endpointId=$ENDPOINT_ID" \
+    "$PORTAINER_URL/api/stacks/create/standalone/file?endpointId=$ENDPOINT_ID" \
     -H "x-api-key: $PORTAINER_API_KEY" \
-    -H "Content-Type: application/json" \
-    -d "{
-          \"Name\": \"$STACK_NAME\",
-          \"StackFileContent\": $STACK_CONTENT_JSON,
-          \"Env\": []
-        }" >/dev/null
+    -F "Name=$STACK_NAME" \
+    -F "file=@$STACK_FILE" \
+    -F 'Env=[]' \
+  | jq '.'
   echo "[INFO] Stack '$STACK_NAME' created successfully."
 fi
