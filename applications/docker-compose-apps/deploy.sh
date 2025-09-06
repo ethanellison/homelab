@@ -28,7 +28,9 @@ else
 fi
 
 # source relevant env configurations
+set -o allexport
 source "/etc/n8n.env"
+set +o allexport
 # === DEPLOY STACK WITH DOCKER COMPOSE ===
 echo "[INFO] Deploying stack '$STACK_NAME' using docker-compose..."
 docker compose -f "$STACK_FILE" up -d --build
