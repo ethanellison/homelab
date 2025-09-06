@@ -1,4 +1,7 @@
 # version: '3.8'
+
+include:
+  - ./automation/compose.yaml
 services:
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:stable
