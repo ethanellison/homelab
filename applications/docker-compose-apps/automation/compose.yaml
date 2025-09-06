@@ -3,6 +3,7 @@ services:
   n8n-ts:
     image: tailscale/tailscale:latest
     platform: linux/aarch64
+    container_name: n8n-ts
     hostname: n8n
     environment:
       - TS_AUTHKEY=${TS_AUTHKEY}
