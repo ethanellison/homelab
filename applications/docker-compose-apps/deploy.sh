@@ -27,6 +27,8 @@ else
   echo "[WARN] $REPO_PATH is not a Git repo. Skipping git pull."
 fi
 
+# source relevant env configurations
+source "/etc/n8n.env"
 # === DEPLOY STACK WITH DOCKER COMPOSE ===
 echo "[INFO] Deploying stack '$STACK_NAME' using docker-compose..."
 docker compose -f "$STACK_FILE" up -d --build
