@@ -39,9 +39,10 @@ services:
       - n8n_data:/home/node/.n8n
     environment:
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
-      - N8N_PROTOCOL=https
+      - N8N_PROTOCOL=http
+      - N8N_HOST=0.0.0.0
       - N8N_RUNNERS_ENABLED=true
-      - WEBHOOK_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}
+      - WEBHOOK_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}:5678
 
 volumes:
   n8n_data:
