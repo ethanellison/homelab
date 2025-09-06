@@ -25,15 +25,10 @@ if [ -d "$REPO_PATH/.git" ]; then
   LOCAL_HASH=$(git rev-parse HEAD)
   REMOTE_HASH=$(git rev-parse @{u})
 
-  if [ "$LOCAL_HASH" = "$REMOTE_HASH" ]; then
-    echo "[INFO] Repo already up to date. Nothing to do."
-    exit 0
-  fi
-
-  echo "[INFO] Pulling new changes..."
-  git pull --rebase
 else
   echo "[WARN] $REPO_PATH is not a Git repo. Skipping git pull."
+  LOCAL_HASH="x"
+  REMOTE_HASH="y"
 fi
 
 # === PREPARE STACK FILE CONTENT ===
