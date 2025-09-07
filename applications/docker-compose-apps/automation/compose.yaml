@@ -34,7 +34,7 @@ services:
     ports:
       - 5678:5678
     depends_on:
-      - n8n-ts
+      # - n8n-ts
       - initContainer
     volumes:
       - n8n_data:/home/node/.n8n
