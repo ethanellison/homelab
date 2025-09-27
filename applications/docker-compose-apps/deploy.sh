@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO_PATH="$(pwd)"
-STACK_FILE="$REPO_PATH/docker-compose.yaml"
+REPO_PATH="$(pwd)/applications/docker-compose-apps"
+STACK_FILE="$REPO_PATH/applications/docker-compose-apps/docker-compose.yaml"
 STACK_NAME="$(basename "$REPO_PATH")" # use repo folder name as stack name
 
 if [ ! -f "$STACK_FILE" ]; then
