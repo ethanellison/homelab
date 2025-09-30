@@ -2,6 +2,7 @@
 
 include:
   - ./automation/compose.yaml
+  - ./budget/compose.yaml
 services:
   tsdproxy:
     image: almeidapaulopt/tsdproxy:2
@@ -53,4 +54,5 @@ services:
       PAPERLESS_REDIS: redis://broker:6379
 
 volumes:
-  - datadir:
+  datadir:
+    external: true
