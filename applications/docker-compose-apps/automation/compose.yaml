@@ -21,13 +21,12 @@ services:
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
       # - N8N_PROTOCOL=https
       - N8N_HOST=n8n.dzo-byzantine.ts.net
-      # - N8N_PORT=5678
+      - N8N_PORT=80
       # - N8N_SECURE_COOKIE=false
     labels:
       - tsdproxy.enable=true
+      - tsdproxy.funnel=true
 volumes:
   n8n_data:
-    driver: local
-  n8n-ts:
     driver: local
 
