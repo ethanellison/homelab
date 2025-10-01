@@ -8,8 +8,8 @@
     "ghcr.io/rio/features/k3d:1": {},
     "ghcr.io/rio/features/k9s:1": {},
   },
-  "forwardPorts": [8080],
-  "postCreateCommand": "chmod +x ./scripts/dev-dependencies.sh && ./scripts/dev-dependencies.sh",
+  // "forwardPorts": [8080],
+  // "postCreateCommand": "chmod +x ./scripts/dev-dependencies.sh && ./scripts/dev-dependencies.sh",
   "remoteUser": "vscode",
   "privileged": true,
   "customizations": {
