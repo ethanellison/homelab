@@ -1,11 +1,11 @@
 {
   "name": "Docker Compose Dev Container",
   "dockerComposeFile": "docker-compose.yml",
-  "service": "dev",
-  "workspaceFolder": "/workspaces/${containerWorkspaceFolder}",
+  "service": "app",
+  "workspaceFolder": "/workspaces",
   "features": {
-    "ghcr.io/devcontainers-extra/features/neovim-apt-get:1": {},
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers-extra/features/neovim-apt-get:1": {}
   },
   "remoteUser": "vscode",
   "privileged": true,
