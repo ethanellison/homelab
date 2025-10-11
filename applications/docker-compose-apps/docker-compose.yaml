@@ -53,6 +53,21 @@ services:
     environment:
       PAPERLESS_REDIS: redis://broker:6379
 
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "82:80/tcp"
+    environment:
+      TZ: 'America/Toronto'
+      WEBPASSWORD: 'changeme'
+    volumes:
+      - '/opt/pihole/etc-pihole:/etc/pihole'
+      - '/opt/pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
+    restart: unless-stopped
+
 volumes:
   datadir:
     external: true
