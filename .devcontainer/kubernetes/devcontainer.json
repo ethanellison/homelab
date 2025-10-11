@@ -1,25 +1,19 @@
 {
+  "name": "Kubernetes Dev Container",
   "build": {
-    "dockerfile": "./Dockerfile"
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
-    "ghcr.io/devcontainers-extra/features/neovim-apt-get:1": {},
-    "ghcr.io/devcontainers-extra/features/argo-cd:1": {},
-    "ghcr.io/rio/features/k3d:1": {},
-    "ghcr.io/rio/features/k9s:1": {}
+    "dockerfile": "Dockerfile"
   },
   "remoteUser": "vscode",
   "privileged": true,
   "customizations": {
     "vscode": {
       "extensions": [
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "redhat.vscode-yaml",
         "esbenp.prettier-vscode",
         "davidanson.vscode-markdownlint",
         "ms-vscode-remote.remote-containers",
-        "github.vscode-pull-request-github",
-        "ms-kubernetes-tools.vscode-kubernetes-tools",
-        "redhat.vscode-yaml"
+        "github.vscode-pull-request-github"
       ]
     }
   }
