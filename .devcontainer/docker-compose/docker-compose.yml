@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  dev:
+    build:
+      context: ..
+      dockerfile: ./base.Dockerfile
+    volumes:
+      - ../:/workspaces:cached
+    # Uncomment the next line to use a non-root user that matches the host user in Dev Container.
+    # See https://aka.ms/vscode-remote/advanced/non-root-user.
+    # user: vscode
+    # entrypoint: /usr/local/share/docker-init.sh
+    # command: sleep infinity

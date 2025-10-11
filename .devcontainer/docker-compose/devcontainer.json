@@ -1,0 +1,23 @@
+{
+  "name": "Docker Compose Dev Container",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspaces/${containerWorkspaceFolder}",
+  "features": {
+    "ghcr.io/devcontainers-extra/features/neovim-apt-get:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "remoteUser": "vscode",
+  "privileged": true,
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "esbenp.prettier-vscode",
+        "davidanson.vscode-markdownlint",
+        "ms-vscode-remote.remote-containers",
+        "github.vscode-pull-request-github"
+      ]
+    }
+  }
+}
