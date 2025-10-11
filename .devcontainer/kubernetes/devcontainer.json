@@ -1,5 +1,4 @@
 {
-  "name": "Kubernetes Dev Container",
   "build": {
     "dockerfile": "Dockerfile"
   },
@@ -8,12 +7,12 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-kubernetes-tools.vscode-kubernetes-tools",
-        "redhat.vscode-yaml",
         "esbenp.prettier-vscode",
         "davidanson.vscode-markdownlint",
         "ms-vscode-remote.remote-containers",
-        "github.vscode-pull-request-github"
+        "github.vscode-pull-request-github",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "redhat.vscode-yaml"
       ]
     }
   }

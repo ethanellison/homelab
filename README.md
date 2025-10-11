@@ -10,26 +10,40 @@ This repository showcases a Gitops-driven Kubernetes homelab environment. It dem
 - `scripts`: Includes automation scripts.
 - `docs`: Contains detailed documentation.
 
-## Devcontainer Options
-
-This repository provides two Devcontainer configurations to cater to different development needs:
-
-- **Kubernetes Devcontainer**: Located in `.devcontainer/kubernetes`, this configuration is designed for developing and testing Kubernetes-native applications. It includes `kubectl`, `helm`, `k3d`, `k9s`, `ArgoCD`, and relevant VS Code extensions like Kubernetes Tools and YAML support.
-
-  **Use Case**: Ideal for working on Helm charts, Kubernetes manifests, or applications that interact directly with a Kubernetes cluster.
-
-- **Docker Compose Devcontainer**: Located in `.devcontainer/docker-compose`, this configuration is tailored for Docker Compose-based development. It provides a Docker-in-Docker environment and the VS Code Docker extension.
-
-  **Use Case**: Suitable for developing microservices, backend services, or any application that uses Docker Compose for local orchestration.
-
-### How to Choose a Devcontainer in VS Code
-
-When opening the repository in VS Code, you will be prompted to choose a Devcontainer configuration if multiple are detected. You can also manually select a configuration:
-
-1. Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`).
-2. Search for `Dev Containers: Open Folder in Container...`.
-3. Select the desired Devcontainer configuration from the list (e.g., `kubernetes` or `docker-compose`).
-
 ## Usage
 
 Refer to the `docs` directory for detailed setup and usage instructions.
+
+## Devcontainer Configurations
+
+This repository provides two devcontainer configurations tailored for different development needs:
+
+### 1. Kubernetes Devcontainer
+
+This configuration is ideal for working with Kubernetes-specific tasks. It includes:
+
+- **Base Image:** Ubuntu 22.04
+- **Features:** Neovim, Kubectl, Helm, Minikube, Argo CD, K3d, K9s
+- **Extensions:** Prettier, Markdownlint, Remote-Containers, GitHub Pull Request, Kubernetes Tools, YAML
+
+**When to use:** Choose this option if you are primarily developing, deploying, or managing Kubernetes resources within the homelab.
+
+**How to select in VS Code:**
+1. Open the command palette (Ctrl+Shift+P or Cmd+Shift+P).
+2. Type and select "Dev Containers: Open Folder in Container..."
+3. Choose the `.devcontainer/kubernetes` option.
+
+### 2. Docker Compose Devcontainer
+
+This configuration is suitable for general Docker-based development, especially when working with `docker-compose.yml` files directly. It includes:
+
+- **Base Image:** Ubuntu 22.04
+- **Features:** Neovim, Docker-in-Docker
+- **Extensions:** Prettier, Markdownlint, Remote-Containers, GitHub Pull Request, Docker
+
+**When to use:** Select this if your focus is on Docker Compose-based services, local development requiring Docker, or if you don't need the full suite of Kubernetes tools.
+
+**How to select in VS Code:**
+1. Open the command palette (Ctrl+Shift+P or Cmd+Shift+P).
+2. Type and select "Dev Containers: Open Folder in Container..."
+3. Choose the `.devcontainer/docker-compose` option.
