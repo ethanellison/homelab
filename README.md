@@ -6,7 +6,7 @@ This repository showcases a Gitops-driven Kubernetes homelab environment. It dem
 
 - `clusters`: Contains cluster-specific configurations.
 - `infrastructure`: Defines core infrastructure components.
-- `applications`: Contains application-specific configurations.
+- `applications`: Contains application-specific configurations, now including Pi-hole.
 - `scripts`: Includes automation scripts.
 - `docs`: Contains detailed documentation.
 
@@ -30,7 +30,7 @@ This configuration is ideal for working with Kubernetes-specific tasks. It inclu
 
 **How to select in VS Code:**
 1. Open the command palette (Ctrl+Shift+P or Cmd+Shift+P).
-2. Type and select "Dev Containers: Open Folder in Container..."
+2. Type and select \"Dev Containers: Open Folder in Container...\"
 3. Choose the `.devcontainer/kubernetes` option.
 
 ### 2. Docker Compose Devcontainer
@@ -45,5 +45,5 @@ This configuration is suitable for general Docker-based development, especially 
 
 **How to select in VS Code:**
 1. Open the command palette (Ctrl+Shift+P or Cmd+Shift+P).
-2. Type and select "Dev Containers: Open Folder in Container..."
+2. Type and select \"Dev Containers: Open Folder in Container...\"
 3. Choose the `.devcontainer/docker-compose` option.
