@@ -1,10 +1,21 @@
-# version: '3'
+version: '3'
 services:
   initContainer:
     image: busybox
     command: ['sh', '-c', 'chown -R 1000:1000 /home/node/.n8n']
     volumes:
       - n8n_data:/home/node/.n8n
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: always
+    container_name: postgres
+    environment:
+      POSTGRES_DB: n8n
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   n8n:
     image: docker.n8n.io/n8nio/n8n:1.115.1
@@ -15,6 +26,7 @@ services:
       - 5678:5678
     depends_on:
       - initContainer
+      - postgres
     volumes:
       - n8n_data:/home/node/.n8n
     environment:
@@ -23,10 +35,18 @@ services:
       - WEBHOOK_URL=https://n8n.dzo-byzantine.ts.net
       - N8N_PROXY_HOPS=1
       # - N8N_SECURE_COOKIE=false
+      - DB_TYPE=postgresdb
+      - DB_POSTGRES_HOST=postgres
+      - DB_POSTGRES_PORT=5432
+      - DB_POSTGRES_DATABASE=n8n
+      - DB_POSTGRES_USER=n8n
+      - DB_POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     labels:
       - tsdproxy.enable=true
       - tsdproxy.funnel=true
+
 volumes:
   n8n_data:
     driver: local
-
+  postgres_data:
+    driver: local
