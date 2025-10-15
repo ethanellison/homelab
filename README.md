@@ -47,3 +47,7 @@ This configuration is suitable for general Docker-based development, especially 
 1. Open the command palette (Ctrl+Shift+P or Cmd+Shift+P).
 2. Type and select "Dev Containers: Open Folder in Container..."
 3. Choose the `.devcontainer/docker-compose` option.
+
+## Application Updates
+
+The `automation` application (`applications/docker-compose-apps/automation/compose.yaml`) now utilizes PostgreSQL with the `pgvector` extension for enhanced database capabilities. Ensure `POSTGRES_PASSWORD` is set in your environment variables for this service.
