@@ -56,14 +56,12 @@ services:
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "8888:80/tcp"
+    network_mode: host
     environment:
       TZ: 'America/Toronto'
-      WEBPASSWORD: 'password' # tmp password
-      DNSMASQ_LISTENING: 'all'
+      FTLCONF_webserver_api_password: 'password'
+      # If using Docker's default `bridge` network setting the dns listening mode should be set to 'all'
+      FTLCONF_dns_listeningMode: 'all'
     volumes:
       - /opt/pihole/etc-pihole:/etc/pihole
       - /opt/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
