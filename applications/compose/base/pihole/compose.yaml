@@ -1,0 +1,20 @@
+version: "3.8"
+
+x-common-config: &common-config
+  restart: unless-stopped
+
+services:
+  pihole:
+    <<: *common-config
+    container_name: pihole
+    image: pihole/pihole:latest
+    environment:
+      TZ: America/Toronto
+      FTLCONF_dns_listeningMode: single
+    volumes:
+      - pihole_etc:/etc/pihole
+      - pihole_dnsmasq:/etc/dnsmasq.d
+
+volumes:
+  pihole_etc:
+  pihole_dnsmasq:

@@ -1,0 +1,108 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Kubernetes manifests
+        run: |
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          ./kustomize version
+          
+          # Validate Kubernetes manifests
+          echo "Validating infrastructure manifests..."
+          ./kustomize build infrastructure/kubernetes/base
+          
+          echo "Validating application manifests..."
+          ./kustomize build applications/kubernetes/base
+          
+          # Add more validation steps as needed
+
+      - name: Validate Docker Compose files
+        run: |
+          # Install Docker Compose V2
+          DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+          mkdir -p $DOCKER_CONFIG/cli-plugins
+          curl -SL https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+          chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+          
+          # Validate Docker Compose files
+          echo "Validating local environment compose files..."
+          docker compose -f applications/compose/environments/local/docker-compose.yaml config
+          
+          echo "Validating VPS environment compose files..."
+          docker compose -f applications/compose/environments/vps/docker-compose.yaml config
+
+  deploy:
+    needs: validate
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency: production_environment
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          if_key_exists: fail
+
+      - name: Deploy to VPS
+        env:
+          HOST: ${{ secrets.SSH_HOST }}
+          USERNAME: ${{ secrets.SSH_USERNAME }}
+          DEPLOY_PATH: /opt/homelab
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: |
+          # Create deploy directory structure
+          ssh $USERNAME@$HOST "mkdir -p $DEPLOY_PATH/applications/compose/environments/vps"
+          
+          # Copy Docker Compose files
+          scp applications/compose/base/docker-compose.yaml $USERNAME@$HOST:$DEPLOY_PATH/applications/compose/base/
+          scp applications/compose/environments/vps/docker-compose.yaml $USERNAME@$HOST:$DEPLOY_PATH/applications/compose/environments/vps/
+          
+          # Create .env file from secrets
+          echo "$ENV_FILE" | ssh $USERNAME@$HOST "cat > $DEPLOY_PATH/applications/compose/environments/vps/.env"
+          
+          # Run deployment script
+          ssh $USERNAME@$HOST "cd $DEPLOY_PATH && \
+            # Pull latest images
+            docker compose -f applications/compose/environments/vps/docker-compose.yaml pull && \
+            # Deploy with zero-downtime when possible
+            docker compose -f applications/compose/environments/vps/docker-compose.yaml up -d --remove-orphans"
+          
+      - name: Verify Deployment
+        env:
+          HOST: ${{ secrets.SSH_HOST }}
+          USERNAME: ${{ secrets.SSH_USERNAME }}
+        run: |
+          # Check service status
+          ssh $USERNAME@$HOST "docker compose -f /opt/homelab/applications/compose/environments/vps/docker-compose.yaml ps --format json" > status.json
+          
+          # Parse status and check for errors
+          if grep -q '"State":"running"' status.json; then
+            echo "Services are running successfully"
+          else
+            echo "Service verification failed"
+            cat status.json
+            exit 1
+          fi
+          
+          # Check logs for any errors
+          ssh $USERNAME@$HOST "docker compose -f /opt/homelab/applications/compose/environments/vps/docker-compose.yaml logs --tail=100" > logs.txt
+          if grep -i "error\|failed" logs.txt; then
+            echo "Found errors in service logs"
+            cat logs.txt
+            exit 1
+          fi

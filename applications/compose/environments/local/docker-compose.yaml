@@ -1,0 +1,30 @@
+include:
+  - ../../base/automation/compose.yaml
+  - ../../base/budget/compose.yaml
+
+services:
+  # Local development overrides
+  homeassistant:
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./data/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      TZ: America/Toronto
+
+  pihole:
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8080:80/tcp"
+    volumes:
+      - ./data/pihole/etc-pihole:/etc/pihole
+      - ./data/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+    environment:
+      TZ: 'America/Toronto'
+      FTLCONF_dns_listeningMode: 'single'
+
+volumes:
+  datadir:
+    driver: local
