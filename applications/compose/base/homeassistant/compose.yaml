@@ -1,20 +1,17 @@
 version: "3.8"
 
-x-common-config: &common-config
-  restart: unless-stopped
 
 services:
   homeassistant:
-    <<: *common-config
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: homeassistant
     privileged: true
+    ports:
+      - "8123:8123"
     volumes:
-      - homeassistant_config:/config
+      - /opt/homeassistant/config:/config
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
     environment:
       TZ: America/Toronto
-
-volumes:
-  homeassistant_config:
+    restart: unless-stopped
