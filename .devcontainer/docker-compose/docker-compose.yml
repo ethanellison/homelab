@@ -5,5 +5,7 @@ services:
       context: ..
       dockerfile: base.Dockerfile
     volumes:
-      - ../:/workspaces:cached
+      - ../../:/workspace
     command: sleep infinity
+    dns:
+      - 8.8.8.8

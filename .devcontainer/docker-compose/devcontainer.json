@@ -2,11 +2,13 @@
   "name": "Docker Compose",
   "dockerComposeFile": "docker-compose.yml",
   "service": "dev",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/workspace",
   "remoteUser": "vscode",
   "privileged": true,
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/tailscale/codespace/tailscale": {}
+
   },
   "customizations": {
     "vscode": {
@@ -15,7 +17,8 @@
         "davidanson.vscode-markdownlint",
         "ms-vscode-remote.remote-containers",
         "github.vscode-pull-request-github",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "github.copilot-chat"
       ]
     }
   }

@@ -1,0 +1,59 @@
+# Common base configuration for all environments
+version: "3.8"
+
+x-common-config: &common-config
+  restart: unless-stopped
+
+services:
+  homeassistant:
+    <<: *common-config
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: homeassistant
+    privileged: true
+    volumes:
+      - homeassistant_config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    environment: &common-tz
+      TZ: America/Toronto
+
+  pihole:
+    <<: *common-config
+    container_name: pihole
+    image: pihole/pihole:latest
+    environment:
+      <<: *common-tz
+      FTLCONF_dns_listeningMode: single
+    volumes:
+      - pihole_etc:/etc/pihole
+      - pihole_dnsmasq:/etc/dnsmasq.d
+
+  paperless:
+    <<: *common-config
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.18.4
+    depends_on:
+      - redis
+    volumes:
+      - paperless_data:/usr/src/paperless/data
+      - paperless_media:/usr/src/paperless/media
+      - paperless_consume:/usr/src/paperless/consume
+      - paperless_export:/usr/src/paperless/export
+    environment:
+      <<: *common-tz
+      PAPERLESS_REDIS: redis://redis:6379
+
+  redis:
+    <<: *common-config
+    image: docker.io/library/redis:8
+    volumes:
+      - redis_data:/data
+
+volumes:
+  homeassistant_config:
+  pihole_etc:
+  pihole_dnsmasq:
+  paperless_data:
+  paperless_media:
+  paperless_consume:
+  paperless_export:
+  redis_data:

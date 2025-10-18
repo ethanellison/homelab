@@ -1,0 +1,81 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Kubernetes manifests
+        run: |
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          ./kustomize version
+          
+          # Validate Kubernetes manifests
+          echo "Validating infrastructure manifests..."
+          ./kustomize build infrastructure/kubernetes/base
+          
+          echo "Validating application manifests..."
+          # ./kustomize build applications/kubernetes/base
+          
+          # Add more validation steps as needed
+
+      - name: Validate Docker Compose files
+        run: |
+          # Install Docker Compose V2
+          DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+          mkdir -p $DOCKER_CONFIG/cli-plugins
+          curl -SL https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+          chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+          
+          # Validate Docker Compose files
+          echo "Validating local environment compose files..."
+          docker compose -f applications/compose/environments/local/docker-compose.yaml config
+          
+          echo "Validating VPS environment compose files..."
+          docker compose -f applications/compose/environments/vps/docker-compose.yaml config
+
+  deploy:
+    needs: validate
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency: production_environment
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          ping: srv715735.dzo-byzantine.ts.net
+      
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        
+      - name: Deploy to VPS
+        env:
+          HOST: srv715735.dzo-byzantine.ts.net
+          USERNAME: root
+        run: |
+          # pull latest changes and deploy in a single SSH connection
+                ssh $USERNAME@$HOST 'set -euo pipefail
+                cd /opt/homelab
+                git pull origin main
+                chmod +x scripts/**/*.sh
+                ./scripts/setup/init-dev-environment.sh docker
+                ./scripts/deploy/deploy.sh vps compose
+                '                
