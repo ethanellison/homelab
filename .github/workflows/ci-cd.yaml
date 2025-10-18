@@ -71,7 +71,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh $USERNAME@$HOST  'set -euo pipefail
+          ssh -i ~/.ssh/id_rsa $USERNAME@$HOST  'set -euo pipefail
           cd /opt/homelab
           git pull origin main
           chmod +x scripts/**/*.sh
