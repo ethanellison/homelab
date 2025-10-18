@@ -35,7 +35,7 @@ print_warning() {
 
 validate_environment() {
     case "$ENVIRONMENT" in
-        local|staging|production) ;;
+        local|staging|production|vps) ;;
         *)
             print_warning "Invalid environment: ${ENVIRONMENT}"
             print_usage

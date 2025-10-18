@@ -9,10 +9,11 @@ services:
       FTLCONF_dns_listeningMode: single
       FTLCONF_dns_interface: eth0
     restart: unless-stopped
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "8080:80/tcp"
+    network_mode: host
+    # ports:
+    #   - "53:53/tcp"
+    #   - "53:53/udp"
+    #   - "8080:80/tcp"
     volumes:
       - /opt/pihole/etc-pihole:/etc/pihole
       - /opt/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
