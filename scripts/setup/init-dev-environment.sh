@@ -105,30 +105,122 @@ setup_dev_environment() {
 
 # === Main Script ===
 main() {
+    print_usage() {
+        cat <<EOF
+Usage: $0 [options...]
+
+Positional commands:
+  docker        Install or upgrade Docker (installs if not present, upgrades if present)
+  dev-tools     Install development tools (k3d, kubectl, helm, argocd)
+  kube          Setup Kubernetes dev environment (k3d cluster, ArgoCD)
+
+Long options:
+  --install-docker     Install Docker
+  --upgrade-docker     Upgrade Docker
+  --dev-tools          Install development tools
+  --setup-env          Setup development environment
+  --all                Run all steps (install/upgrade docker, dev tools, setup env)
+  --help, -h           Show this help
+EOF
+    }
+
     check_root
     detect_system
-    
-    # Install or upgrade Docker
-    if command -v docker &>/dev/null; then
-        upgrade_docker
-    else
-        install_docker
+
+    DO_INSTALL_DOCKER=0
+    DO_UPGRADE_DOCKER=0
+    DO_DEV_TOOLS=0
+    DO_SETUP_ENV=0
+    DO_ALL=0
+
+    if [[ $# -eq 0 ]]; then
+        print_warning "No arguments provided. Exiting (non-interactive mode)."
+        print_usage
+        exit 1
     fi
-    
-    systemctl enable docker
-    systemctl start docker
-    
-    # Install development tools
-    install_dev_tools
-    
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            docker)
+                if command -v docker &>/dev/null; then
+                    DO_UPGRADE_DOCKER=1
+                else
+                    DO_INSTALL_DOCKER=1
+                fi
+                ;;
+            dev-tools|--dev-tools)
+                DO_DEV_TOOLS=1
+                ;;
+            kube|--setup-env)
+                DO_SETUP_ENV=1
+                ;;
+            --install-docker)
+                DO_INSTALL_DOCKER=1
+                ;;
+            --upgrade-docker)
+                DO_UPGRADE_DOCKER=1
+                ;;
+            --all|all)
+                DO_ALL=1
+                ;;
+            --help|-h)
+                print_usage
+                exit 0
+                ;;
+            *)
+                print_warning "Unknown option/command: $1"
+                print_usage
+                exit 2
+                ;;
+        esac
+        shift
+    done
+
+    # If --all selected, set individual flags
+    if [[ $DO_ALL -eq 1 ]]; then
+        if command -v docker &>/dev/null; then
+            DO_UPGRADE_DOCKER=1
+        else
+            DO_INSTALL_DOCKER=1
+        fi
+        DO_DEV_TOOLS=1
+        DO_SETUP_ENV=1
+    fi
+
+    # Docker actions
+    if [[ $DO_INSTALL_DOCKER -eq 1 || $DO_UPGRADE_DOCKER -eq 1 ]]; then
+        if [[ $DO_INSTALL_DOCKER -eq 1 ]]; then
+            install_docker
+        else
+            upgrade_docker
+        fi
+
+        # Try to enable and start docker if systemctl is available
+        if command -v systemctl &>/dev/null; then
+            systemctl enable docker || print_warning "systemctl enable docker failed"
+            systemctl start docker || print_warning "systemctl start docker failed"
+        else
+            print_warning "systemctl not available; please ensure Docker is started manually"
+        fi
+    fi
+
+    # Development tools
+    if [[ $DO_DEV_TOOLS -eq 1 ]]; then
+        install_dev_tools
+    fi
+
     # Setup development environment
-    setup_dev_environment
-    
-    print_message "Installation complete"
-    docker --version
-    kubectl version --client
-    helm version
-    argocd version --client
+    if [[ $DO_SETUP_ENV -eq 1 ]]; then
+        setup_dev_environment
+    fi
+
+    print_message "Requested operations complete"
+
+    # Show versions for installed tools (ignore errors)
+    if command -v docker &>/dev/null; then docker --version || true; fi
+    if command -v kubectl &>/dev/null; then kubectl version --client --short || true; fi
+    if command -v helm &>/dev/null; then helm version --short || true; fi
+    if command -v argocd &>/dev/null; then argocd version --client || true; fi
 }
 
 main "$@"

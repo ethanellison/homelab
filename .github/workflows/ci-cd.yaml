@@ -45,7 +45,7 @@ jobs:
 
   deploy:
     needs: validate
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
     concurrency: production_environment
@@ -60,56 +60,22 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
           ping: srv715735.dzo-byzantine.ts.net
-
-      # - name: Deploy to VPS
-      #   env:
-      #     HOST: srv715735.dzo-byzantine.ts.net
-      #     USERNAME: root
-      #     DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
-      #     GIT_URL: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-      #     # ENV_FILE: ${{ vars.ENV_FILE }}     
-      #     run: |
-      #       # Ensure deploy directory exists and git is available
-      #       ssh $USERNAME@$HOST "mkdir -p $DEPLOY_PATH && (command -v git >/dev/null 2>&1 || (apt-get update -y && apt-get install -y git))"
-
-      #       # Clone the repo if missing, otherwise update to latest main
-      #       ssh $USERNAME@$HOST "if [ -d $DEPLOY_PATH/.git ]; then
-      #         cd $DEPLOY_PATH && git fetch --all --prune && git reset --hard origin/main
-      #       else
-      #         rm -rf $DEPLOY_PATH && git clone --depth 1 \"$GIT_URL\" \"$DEPLOY_PATH\"
-      #       fi"
-
-      #       # Optionally create .env from secret (if provided)
-      #       if [ -n "$ENV_FILE" ]; then
-      #         echo "$ENV_FILE" | ssh $USERNAME@$HOST "cat > $DEPLOY_PATH/applications/compose/environments/vps/.env"
-      #       fi
-
-      #       # Pull images and deploy using the cloned repository
-      #       ssh $USERNAME@$HOST "cd $DEPLOY_PATH && \
-      #         docker compose -f applications/compose/environments/vps/docker-compose.yaml pull && \
-      #         docker compose -f applications/compose/environments/vps/docker-compose.yaml up -d --remove-orphans"
-          
-      # - name: Verify Deployment
-      #   env:
-      #     HOST: ${{ secrets.SSH_HOST }}
-      #     USERNAME: ${{ secrets.SSH_USERNAME }}
-      #   run: |
-      #     # Check service status
-      #     ssh $USERNAME@$HOST "docker compose -f /opt/homelab/applications/compose/environments/vps/docker-compose.yaml ps --format json" > status.json
-          
-      #     # Parse status and check for errors
-      #     if grep -q '"State":"running"' status.json; then
-      #       echo "Services are running successfully"
-      #     else
-      #       echo "Service verification failed"
-      #       cat status.json
-      #       exit 1
-      #     fi
-          
-      #     # Check logs for any errors
-      #     ssh $USERNAME@$HOST "docker compose -f /opt/homelab/applications/compose/environments/vps/docker-compose.yaml logs --tail=100" > logs.txt
-      #     if grep -i "error\|failed" logs.txt; then
-      #       echo "Found errors in service logs"
-      #       cat logs.txt
-      #       exit 1
-      #     fi
+      
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        
+      - name: Deploy to VPS
+        env:
+          HOST: srv715735.dzo-byzantine.ts.net
+          USERNAME: root
+        run: |
+          # pull latest changes and deploy in a single SSH connection
+                ssh $USERNAME@$HOST 'set -euo pipefail
+                cd /opt/homelab
+                git pull origin main
+                chmod +x scripts/**/*.sh
+                ./scripts/setup/init-dev-environment.sh docker
+                ./scripts/deploy/deploy.sh vps compose
+                '                
