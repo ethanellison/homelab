@@ -60,21 +60,31 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
           ping: srv715735.dzo-byzantine.ts.net
-        
+      - name: Setup SSH_PRIVATE_KEY
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "srv715735.dzo-byzantine.ts.net" >> ~/.ssh/known_hosts
+
       - name: Deploy to VPS
         env:
           HOST: srv715735.dzo-byzantine.ts.net
           USERNAME: root
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          # pull latest changes and deploy in a single SSH connection using private SSH_PRIVATE_KEY
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh -i ~/.ssh/id_rsa $USERNAME@$HOST  'set -euo pipefail
-          cd /opt/homelab
-          git pull origin main
-          chmod +x scripts/**/*.sh
-          ./scripts/setup/init-dev-environment.sh docker
-          ./scripts/deploy/deploy.sh vps compose
-          '                
+          # use SSH_PRIVATE_KEY to connect to the VPS and deploy
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
+            cd /opt/homelab
+            git pull origin main
+            chmod +x scripts/**/*.sh
+            ./scripts/setup/init-dev-environment.sh docker
+            ./scripts/deploy/deploy.sh vps compose
+
+          
+          
+
+
+          
