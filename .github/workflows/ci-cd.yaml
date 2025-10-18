@@ -76,13 +76,13 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           # use SSH_PRIVATE_KEY to connect to the VPS and deploy
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@srv715735.dzo-byzantine.ts.net \
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@srv715735.dzo-byzantine.ts.net 'set -euo pipefail
             echo "✅ Connected to host"
             cd /opt/homelab
             git pull origin main
             chmod +x scripts/**/*.sh
             ./scripts/setup/init-dev-environment.sh docker
-            ./scripts/deploy/deploy.sh vps compose
+            ./scripts/deploy/deploy.sh vps compose'
 
           
           
