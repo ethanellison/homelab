@@ -76,8 +76,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           # use SSH_PRIVATE_KEY to connect to the VPS and deploy
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
-            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
             echo "✅ Connected to host"
             cd /opt/homelab
             git pull origin main
