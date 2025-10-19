@@ -82,6 +82,7 @@ jobs:
             git pull origin main
             chmod +x scripts/**/*.sh
             ./scripts/setup/init-dev-environment.sh docker
+            ./scripts/deploy/load-env.sh
             ./scripts/deploy/deploy.sh vps compose'
 
           
