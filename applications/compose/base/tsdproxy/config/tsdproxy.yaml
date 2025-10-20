@@ -8,8 +8,8 @@ lists: {}
 tailscale:
   providers:
     default: # name of the provider
-      authKey: "${TSDPROXY_AUTH}"  # optional, define authkey here
-      authKeyFile: "" # optional, use this to load authkey from file. If this is defined, Authkey is ignored
+      authKey: ""  # optional, define authkey here
+      authKeyFile: "/run/secrets/tsdproxy_auth" # optional, use this to load authkey from file. If this is defined, Authkey is ignored
       controlUrl: https://controlplane.tailscale.com # use this to override the default control URL
   dataDir: /data/
 http:

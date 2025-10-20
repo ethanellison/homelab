@@ -14,3 +14,9 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
+    secrets:
+      - tsdproxy_auth
+
+secrets:
+  tsdproxy_auth:
+    environment: TSDPROXY_AUTH
