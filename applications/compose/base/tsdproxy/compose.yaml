@@ -4,7 +4,7 @@ services:
   tsdproxy:
     image: almeidapaulopt/tsdproxy:2
     environment:
-        TS_AUTHKEY: $(pass show tailscale/tsdproxy)
+        TS_AUTHKEY: ${TSDPROXY_AUTH}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /opt/tsdproxy_data:/data
