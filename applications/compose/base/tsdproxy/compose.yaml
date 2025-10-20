@@ -3,8 +3,8 @@ version: "3.8"
 services:
   tsdproxy:
     image: almeidapaulopt/tsdproxy:2
-    environment:
-        TSDPROXY_AUTH: ${TSDPROXY_AUTH}
+    # environment:
+    #     TSDPROXY_AUTH: ${TSDPROXY_AUTH}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /opt/tsdproxy_data:/data
