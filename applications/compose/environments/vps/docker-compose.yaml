@@ -1,3 +1,0 @@
-include:
-  - ../../base/automation/compose.yaml
-  - ../../base/tsdproxy/compose.yaml
