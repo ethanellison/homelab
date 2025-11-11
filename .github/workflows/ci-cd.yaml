@@ -78,7 +78,7 @@ jobs:
           # use SSH_PRIVATE_KEY to connect to the VPS and deploy
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@srv715735.dzo-byzantine.ts.net 'set -euo pipefail
             echo "✅ Connected to host"
-            gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -d ~/.password-store/actual.gpg
+            gpg --quiet --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -d ~/.password-store/actual.gpg
             cd /opt/homelab
             git pull origin main
             chmod +x scripts/**/*.sh
