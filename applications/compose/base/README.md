@@ -92,10 +92,19 @@ services:
      - ../../base/new-service/compose.yaml
    ```
 
+## Secrets Management
+
+Secrets are managed using Docker Compose's built-in `secrets` feature for secure, file-based handling of sensitive data like passwords and keys. Secrets are mounted at `/run/secrets/<secret_name>` in containers.
+
+- Secret files are stored in `../../secrets/` relative to each compose file.
+- Applications read secrets from mounted files (using `_FILE` env vars where supported, or command wrappers).
+- The `secrets/` directory is gitignored to prevent committing sensitive data.
+- For production, populate secret files via external tools (e.g., scripts fetching from secret managers).
+
 ## Best Practices
 
 1. Keep base configurations minimal
-2. Use environment variables for customization
+2. Use secrets for sensitive data instead of env vars or hardcoded values
 3. Define volumes in base configurations
 4. Use common labels and networks
 5. Follow naming conventions

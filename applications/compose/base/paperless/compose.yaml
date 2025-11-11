@@ -4,7 +4,17 @@ x-common-config: &common-config
   restart: unless-stopped
 
 services:
-  paperless:
+   redis:
+     <<: *common-config
+     image: docker.io/library/redis:8
+     volumes:
+       - redis_data:/data
+     secrets:
+       - source: redis_password
+         target: redis_password
+     command: sh -c "redis-server --requirepass $(cat /run/secrets/redis_password)"
+
+   paperless:
     <<: *common-config
     image: ghcr.io/paperless-ngx/paperless-ngx:2.18.4
     depends_on:
@@ -17,12 +27,13 @@ services:
     environment:
       TZ: America/Toronto
       PAPERLESS_REDIS: redis://redis:6379
-
-  redis:
-    <<: *common-config
-    image: docker.io/library/redis:8
-    volumes:
-      - redis_data:/data
+      PAPERLESS_SECRET_KEY_FILE: /run/secrets/paperless_secret_key
+      PAPERLESS_ADMIN_PASSWORD_FILE: /run/secrets/paperless_admin_password
+    secrets:
+      - source: paperless_secret_key
+        target: paperless_secret_key
+      - source: paperless_admin_password
+        target: paperless_admin_password
 
 volumes:
   paperless_data:
@@ -30,3 +41,11 @@ volumes:
   paperless_consume:
   paperless_export:
   redis_data:
+
+secrets:
+  redis_password:
+    file: ../../secrets/redis_password.txt
+  paperless_secret_key:
+    file: ../../secrets/paperless_secret_key.txt
+  paperless_admin_password:
+    file: ../../secrets/paperless_admin_password.txt
