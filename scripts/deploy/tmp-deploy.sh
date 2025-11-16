@@ -9,25 +9,25 @@ fi
 HOST="$1"
 
 if [ -z "$HOST" ]; then
-  echo "Usage: ./deploy.sh <pi|vps>"
+  echo "Usage: ./deploy.sh <local|vps>"
   exit 1
 fi
 
-ROOT="$(dirname "$0")/.."
+ROOT="$(dirname "$0")/../../applications/compose"
 cd "$ROOT"
 
-SERVICES=$(yq '.services[]' "hosts/$HOST/services.yaml")
+SERVICES=$(yq '.services[]' "environments/$HOST/services.yaml")
 
 FILES=""
 for S in $SERVICES; do
-  FILES="$FILES -f services/$S/compose.yaml"
+  FILES="$FILES -f base/$S/compose.yaml"
 done
 
-FILES="$FILES -f hosts/$HOST/compose.yaml"
+FILES="$FILES -f environments/$HOST/compose.yaml"
 
 echo "Deploying to host: $HOST"
 echo "Compose files: $FILES"
 
 set -x
-docker compose $FILES --env-file hosts/$HOST/.env pull
-docker compose $FILES --env-file hosts/$HOST/.env up -d
+docker compose $FILES --env-file environments/$HOST/.env pull
+docker compose $FILES --env-file environments/$HOST/.env up -d
