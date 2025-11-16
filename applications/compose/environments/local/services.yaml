@@ -1,0 +1,4 @@
+services:
+  - homeassistant
+  - budget
+  - pihole

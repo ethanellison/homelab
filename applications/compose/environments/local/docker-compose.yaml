@@ -1,4 +1,8 @@
-include:
-  - ../../base/pihole/compose.yaml
-  - ../../base/homeassistant/compose.yaml
-  - ../../base/budget/compose.yaml
+services:
+  pihole:
+    network_mode: host
+    ports: []
+
+  homeassistant:
+    network_mode: host
+    ports: []
