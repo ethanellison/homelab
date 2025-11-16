@@ -23,7 +23,7 @@ for S in $SERVICES; do
   FILES="$FILES -f base/$S/compose.yaml"
 done
 
-FILES="$FILES -f environments/$HOST/compose.yaml"
+FILES="$FILES -f environments/$HOST/docker-compose.yaml"
 
 echo "Deploying to host: $HOST"
 echo "Compose files: $FILES"
