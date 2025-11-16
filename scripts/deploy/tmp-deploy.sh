@@ -16,7 +16,7 @@ fi
 ROOT="$(dirname "$0")/../../applications/compose"
 cd "$ROOT"
 
-SERVICES=$(yq '.services[]' "environments/$HOST/services.yaml")
+SERVICES=$(yq -r '.services[]' "environments/$HOST/services.yaml")
 
 FILES=""
 for S in $SERVICES; do
