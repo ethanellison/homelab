@@ -8,6 +8,8 @@ services:
     environment:
       - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
   n8n:
+    secrets:
+      - postgres_password
     environment:
       - DB_POSTGRESDB_PASSWORD_FILE=/run/secrets/postgres_password
       - N8N_VECTOR_STORE_POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
