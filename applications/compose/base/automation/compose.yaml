@@ -2,7 +2,7 @@
 services:
   initContainer:
     image: busybox
-    command: ['sh', '-c', 'chown -R 1000:1000 /home/node/.n8n']
+    command: ["sh", "-c", "chown -R 1000:1000 /home/node/.n8n"]
     volumes:
       - /opt/n8n_data:/home/node/.n8n
 
@@ -13,13 +13,12 @@ services:
     environment:
       - POSTGRES_DB=n8n
       - POSTGRES_USER=n8n
-      - POSTGRES_PASSWORD=n8n_password
     volumes:
       - /opt/postgres_data:/var/lib/postgresql/data
     ports:
       - 5432:5432
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U n8n -d n8n']
+      test: ["CMD-SHELL", "pg_isready -U n8n -d n8n"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -47,7 +46,6 @@ services:
       - DB_POSTGRESDB_PORT=5432
       - DB_POSTGRESDB_DATABASE=n8n
       - DB_POSTGRESDB_USER=n8n
-      - DB_POSTGRESDB_PASSWORD=n8n_password
       # Vector store configuration
       - N8N_VECTOR_STORE_ENABLED=true
       - N8N_VECTOR_STORE_TYPE=postgres
@@ -55,8 +53,6 @@ services:
       - N8N_VECTOR_STORE_POSTGRES_PORT=5432
       - N8N_VECTOR_STORE_POSTGRES_DATABASE=n8n
       - N8N_VECTOR_STORE_POSTGRES_USER=n8n
-      - N8N_VECTOR_STORE_POSTGRES_PASSWORD=n8n_password
     labels:
       - tsdproxy.enable=true
       - tsdproxy.funnel=true
-
