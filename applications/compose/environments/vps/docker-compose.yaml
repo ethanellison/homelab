@@ -1,7 +1,4 @@
 services:
-  tsdproxy:
-    secrets:
-      - tsdproxy_auth
   postgres:
     secrets:
       - postgres_password
