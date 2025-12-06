@@ -29,18 +29,35 @@ jobs:
 
       - name: Validate Docker Compose files
         run: |
+          # Install yq
+          sudo apt-get update && sudo apt-get install -y yq
+
           # Install Docker Compose V2
           DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
           mkdir -p $DOCKER_CONFIG/cli-plugins
           curl -SL https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
           chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 
-          # Validate Docker Compose files
-          echo "Validating local environment compose files..."
-          docker compose -f applications/compose/environments/local/docker-compose.yaml config
+          ROOT="applications/compose"
 
-          echo "Validating VPS environment compose files..."
-          docker compose -f applications/compose/environments/vps/docker-compose.yaml config
+          validate_host() {
+            HOST=$1
+            echo "Validating $HOST environment compose files..."
+            
+            SERVICES=$(yq -r '.services[]' "$ROOT/environments/$HOST/services.yaml")
+            
+            FILES=""
+            for S in $SERVICES; do
+              FILES="$FILES -f $ROOT/base/$S/compose.yaml"
+            done
+            
+            FILES="$FILES -f $ROOT/environments/$HOST/docker-compose.yaml"
+            
+            docker compose $FILES config
+          }
+
+          validate_host local
+          validate_host vps
 
   deploy:
     needs: validate
@@ -83,4 +100,4 @@ jobs:
             git pull origin main
             chmod +x scripts/**/*.sh
             ./scripts/setup/init-dev-environment.sh docker
-            ./scripts/deploy/deploy.sh vps compose'
+            ./scripts/deploy/tmp-deploy.sh vps'
