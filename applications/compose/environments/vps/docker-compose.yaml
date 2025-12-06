@@ -13,6 +13,3 @@ services:
 secrets:
   postgres_password:
     environment: POSTGRES_PASSWORD
-
-  tsdproxy_auth:
-    environment: TSDPROXY_AUTH

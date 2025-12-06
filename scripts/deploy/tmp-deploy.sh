@@ -9,7 +9,7 @@ fi
 HOST="$1"
 
 if [ -z "$HOST" ]; then
-  echo "Usage: ./deploy.sh <local|vps>"
+  echo "Usage: ./deploy.sh <local|vps> [up|down]"
   exit 1
 fi
 
@@ -27,6 +27,15 @@ FILES="$FILES -f environments/$HOST/docker-compose.yaml"
 
 echo "Deploying to host: $HOST"
 echo "Compose files: $FILES"
+
+ACTION="${2:-up}"
+
+if [ "$ACTION" = "down" ]; then
+  echo "Bringing down deployment for host: $HOST"
+  set -x
+  docker compose $FILES --env-file environments/$HOST/.env down
+  exit 0
+fi
 
 set -x
 docker compose $FILES --env-file environments/$HOST/.env pull

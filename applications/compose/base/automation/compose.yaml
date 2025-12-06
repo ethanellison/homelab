@@ -46,7 +46,8 @@ services:
     image: docker.n8n.io/n8nio/n8n:1.123.3
     restart: always
     container_name: n8n
-    network_mode: service:ts-n8n
+    ports:
+      - 5678:5678
     depends_on:
       - initContainer
       - postgres
