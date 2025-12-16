@@ -111,12 +111,13 @@ jobs:
             TEMP_ENV_FILE="/tmp/homelab-secrets-$(date +%s%N).env"
             
             # Base CI secrets
-            gpg --quiet --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -d ~/.password-store/github/ci.gpg
-            
+            gpg --quiet --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -d ~/.password-store/github/ci.gpg > "$TEMP_ENV_FILE"
+            chmod 600 "$TEMP_ENV_FILE"  # Apply secure permissions immediately
+
             # Service-specific secrets
             for SERVICE in $SERVICES; do
               # We use a naming convention: ~/.password-store/homelab/vps/SERVICE_NAME.gpg
-              SECRET_PATH="~/.password-store/homelab/vps/${SERVICE}.gpg"
+              SECRET_PATH="$HOME/.password-store/homelab/vps/${SERVICE}.gpg"
               # Check for file existence before attempting to decrypt
               if [ -f "$SECRET_PATH" ]; then
                 echo "Decrypting secrets for service: ${SERVICE}"
@@ -126,7 +127,6 @@ jobs:
                 echo "No specific secret found for service: ${SERVICE} at ${SECRET_PATH}"
               fi
             done
-            chmod 400 "$TEMP_ENV_FILE"
             
             cd /opt/homelab
             git pull origin main
