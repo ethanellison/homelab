@@ -1,14 +1,11 @@
 services:
-  actual_server:
+  budget:
     image: docker.io/actualbudget/actual-server:25.12.0
-    container_name: actual_server
+    container_name: budget
     ports:
       # This line makes Actual available at port 5006 of the device you run the server on,
       # i.e. http://localhost:5006. You can change the first number to change the port, if you want.
-      - '5006:5006'
-    labels:
-      # This label enables integration with tsdproxy, a reverse proxy used in this setup for routing and securing traffic to the Actual server.
-      - tsdproxy.enable=true
+      - "5006:5006"
     environment:
       # Uncomment any of the lines below to set configuration options.
       # - ACTUAL_HTTPS_KEY=/data/selfhost.key
@@ -25,9 +22,29 @@ services:
       - /opt/actual/data:/data
     healthcheck:
       # Enable health check for the instance
-      test: ['CMD-SHELL', 'node src/scripts/health-check.js']
+      test: ["CMD-SHELL", "node src/scripts/health-check.js"]
       interval: 60s
       timeout: 10s
       retries: 3
       start_period: 20s
     restart: unless-stopped
+
+  ts-budget:
+    image: tailscale/tailscale:latest
+    container_name: ts-budget
+    hostname: budget
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container
+      - TS_SERVE_CONFIG=/config/budget.json
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ./config:/config
+      - /opt/ts-budget/state:/var/lib/tailscale
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    restart: unless-stopped
+
