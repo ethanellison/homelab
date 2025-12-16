@@ -85,6 +85,10 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H "srv715735.dzo-byzantine.ts.net" >> ~/.ssh/known_hosts
 
+      - name: Install yq
+        run: |
+          sudo apt-get update && sudo apt-get install -y yq
+
       - name: Deploy to VPS
         env:
           HOST: srv715735.dzo-byzantine.ts.net
@@ -92,12 +96,43 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          # use SSH_PRIVATE_KEY to connect to the VPS and deploy
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@srv715735.dzo-byzantine.ts.net 'set -euo pipefail
-            echo "✅ Connected to host"
-            gpg --quiet --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -d ~/.password-store/github/ci.gpg
+          HOST_ENV="vps"
+          ROOT="applications/compose"
+          
+          # 1. Get the list of services to deploy
+          SERVICES=$(yq -r '.services[]' "$ROOT/environments/$HOST_ENV/services.yaml")
+          echo "Deploying services: $SERVICES"
+          
+          # 2. Use SSH and pass the services list as an environment variable to the remote shell
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@srv715735.dzo-byzantine.ts.net SERVICES="$SERVICES" 'set -euo pipefail
+            echo "✅ Connected to host and preparing secrets"
+            
+            TEMP_ENV_FILE="/tmp/homelab-secrets-$(date +%s%N).env"
+            
+            # Base CI secrets
+            gpg --quiet --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -d ~/.password-store/github/ci.gpg > "$TEMP_ENV_FILE"
+            
+            # Service-specific secrets
+            for SERVICE in $SERVICES; do
+              # We use a naming convention: ~/.password-store/homelab/vps/SERVICE_NAME.gpg
+              SECRET_PATH="~/.password-store/homelab/vps/${SERVICE}.gpg"
+              # Check for file existence before attempting to decrypt
+              if [ -f "$SECRET_PATH" ]; then
+                echo "Decrypting secrets for service: ${SERVICE}"
+                gpg --quiet --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -d "$SECRET_PATH" >> "$TEMP_ENV_FILE"
+                echo "" >> "$TEMP_ENV_FILE" # Ensure a newline after decryption
+              else
+                echo "No specific secret found for service: ${SERVICE} at ${SECRET_PATH}"
+              fi
+            done
+            
             cd /opt/homelab
             git pull origin main
             chmod +x scripts/**/*.sh
             ./scripts/setup/init-dev-environment.sh docker
-            ./scripts/deploy/tmp-deploy.sh vps'
+
+            # Deploy using the securely decrypted environment file
+            HOMELAB_ENV_FILE="$TEMP_ENV_FILE" ./scripts/deploy/tmp-deploy.sh vps
+
+            # Securely remove the temporary environment file
+            rm -f "$TEMP_ENV_FILE"'
