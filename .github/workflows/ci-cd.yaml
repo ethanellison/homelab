@@ -126,6 +126,7 @@ jobs:
                 echo "No specific secret found for service: ${SERVICE} at ${SECRET_PATH}"
               fi
             done
+            chmod 400 "$TEMP_ENV_FILE"
             
             cd /opt/homelab
             git pull origin main
@@ -137,4 +138,3 @@ jobs:
 
             # Securely remove the temporary environment file
             rm -f "$TEMP_ENV_FILE"'
-
