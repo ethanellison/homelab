@@ -111,7 +111,7 @@ jobs:
             TEMP_ENV_FILE="/tmp/homelab-secrets-$(date +%s%N).env"
             
             # Base CI secrets
-            gpg --quiet --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -d ~/.password-store/github/ci.gpg > "$TEMP_ENV_FILE"
+            gpg --quiet --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -d ~/.password-store/github/ci.gpg
             
             # Service-specific secrets
             for SERVICE in $SERVICES; do
@@ -134,7 +134,7 @@ jobs:
             ./scripts/setup/init-dev-environment.sh docker
 
             # Deploy using the securely decrypted environment file
-            HOMELAB_ENV_FILE="$TEMP_ENV_FILE" ./scripts/deploy/tmp-deploy.sh vps
+            HOMELAB_ENV_FILE="$TEMP_ENV_FILE" ./scripts/deploy/tmp-deploy.sh vps up
 
             # Securely remove the temporary environment file
             rm -f "$TEMP_ENV_FILE"'
