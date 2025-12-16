@@ -59,5 +59,5 @@ if [ "$ACTION" = "down" ]; then
 fi
 
 set -x
-docker compose $FILES --env-file "\$ENV_FILE" pull
-docker compose $FILES --env-file "\$ENV_FILE" up -d
+docker compose $FILES --env-file "$ENV_FILE" pull
+docker compose $FILES --env-file "$ENV_FILE" up -d
