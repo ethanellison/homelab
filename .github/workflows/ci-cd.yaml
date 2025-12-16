@@ -98,15 +98,16 @@ jobs:
         run: |
           HOST_ENV="vps"
           ROOT="applications/compose"
-          
+
           # 1. Get the list of services to deploy
           SERVICES=$(yq -r '.services[]' "$ROOT/environments/$HOST_ENV/services.yaml")
           echo "Deploying services: $SERVICES"
-          
+
           # 2. Use SSH and pass the services list as an environment variable to the remote shell
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@srv715735.dzo-byzantine.ts.net SERVICES="$SERVICES" 'set -euo pipefail
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@srv715735.dzo-byzantine.ts.net 'set -euo pipefail
             echo "✅ Connected to host and preparing secrets"
             
+            SERVICES="'"$SERVICES"'"
             TEMP_ENV_FILE="/tmp/homelab-secrets-$(date +%s%N).env"
             
             # Base CI secrets
@@ -136,3 +137,4 @@ jobs:
 
             # Securely remove the temporary environment file
             rm -f "$TEMP_ENV_FILE"'
+
