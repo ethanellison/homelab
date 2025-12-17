@@ -8,7 +8,7 @@
     "${TS_CERT_DOMAIN}:443": {
       "Handlers": {
         "/": {
-          "Proxy": "http://budget:5006"
+          "Proxy": "http://127.0.0.1:5006"
         }
       }
     }
