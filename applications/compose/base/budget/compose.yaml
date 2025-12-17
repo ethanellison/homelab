@@ -1,4 +1,22 @@
 services:
+  ts-budget:
+    image: tailscale/tailscale:latest
+    container_name: ts-budget
+    hostname: budget
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container
+      - TS_SERVE_CONFIG=/config/budget.json
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ./config:/config
+      - /opt/ts-budget/state:/var/lib/tailscale
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    restart: unless-stopped
   budget:
     image: docker.io/actualbudget/actual-server:25.12.0
     container_name: budget
@@ -31,22 +49,3 @@ services:
     restart: unless-stopped
     depends_on:
       - ts-budget
-
-  ts-budget:
-    image: tailscale/tailscale:latest
-    container_name: ts-budget
-    hostname: budget
-    environment:
-      - TS_AUTHKEY=${TS_AUTHKEY}
-      - TS_EXTRA_ARGS=--advertise-tags=tag:container
-      - TS_SERVE_CONFIG=/config/budget.json
-      - TS_STATE_DIR=/var/lib/tailscale
-      - TS_USERSPACE=false
-    volumes:
-      - ./config:/config
-      - /opt/ts-budget/state:/var/lib/tailscale
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - net_admin
-    restart: unless-stopped
