@@ -13,7 +13,7 @@ if [ -z "$HOST" ]; then
   exit 1
 fi
 
-ENV_FILE="$HOMELAB_ENV_FILE"
+ENV_FILE="${HOMELAB_ENV_FILE:-}"
 
 if [ -z "$ENV_FILE" ]; then
   if [ "$HOST" = "local" ]; then
