@@ -113,24 +113,27 @@ Positional commands:
   docker        Install or upgrade Docker (installs if not present, upgrades if present)
   dev-tools     Install development tools (k3d, kubectl, helm, argocd)
   kube          Setup Kubernetes dev environment (k3d cluster, ArgoCD)
+  portainer     Install/Upgrade Portainer
 
 Long options:
   --install-docker     Install Docker
   --upgrade-docker     Upgrade Docker
   --dev-tools          Install development tools
   --setup-env          Setup development environment
-  --all                Run all steps (install/upgrade docker, dev tools, setup env)
+  --install-portainer  Install/Upgrade Portainer
+  --all                Run all steps (install/upgrade docker, dev tools, setup env, portainer)
   --help, -h           Show this help
 EOF
     }
 
-    check_root
+
     detect_system
 
     DO_INSTALL_DOCKER=0
     DO_UPGRADE_DOCKER=0
     DO_DEV_TOOLS=0
     DO_SETUP_ENV=0
+    DO_PORTAINER=0
     DO_ALL=0
 
     if [[ $# -eq 0 ]]; then
@@ -154,6 +157,9 @@ EOF
             kube|--setup-env)
                 DO_SETUP_ENV=1
                 ;;
+            portainer|--install-portainer)
+                DO_PORTAINER=1
+                ;;
             --install-docker)
                 DO_INSTALL_DOCKER=1
                 ;;
@@ -176,6 +182,7 @@ EOF
         shift
     done
 
+
     # If --all selected, set individual flags
     if [[ $DO_ALL -eq 1 ]]; then
         if command -v docker &>/dev/null; then
@@ -185,6 +192,7 @@ EOF
         fi
         DO_DEV_TOOLS=1
         DO_SETUP_ENV=1
+        DO_PORTAINER=1
     fi
 
     # Docker actions
@@ -207,6 +215,12 @@ EOF
     # Development tools
     if [[ $DO_DEV_TOOLS -eq 1 ]]; then
         install_dev_tools
+    fi
+
+    # Portainer
+    if [[ $DO_PORTAINER -eq 1 ]]; then
+        print_message "Setting up Portainer"
+        /bin/bash "$(dirname "$0")/install-portainer.sh"
     fi
 
     # Setup development environment
