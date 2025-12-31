@@ -21,10 +21,10 @@ services:
     image: docker.io/actualbudget/actual-server:25.12.0
     container_name: budget
     network_mode: service:ts-budget
-    ports:
-      # This line makes Actual available at port 5006 of the device you run the server on,
-      # i.e. http://localhost:5006. You can change the first number to change the port, if you want.
-      - "5006:5006"
+    # ports:
+    #   # This line makes Actual available at port 5006 of the device you run the server on,
+    #   # i.e. http://localhost:5006. You can change the first number to change the port, if you want.
+    #   - "5006:5006"
     environment:
       # Uncomment any of the lines below to set configuration options.
       # - ACTUAL_HTTPS_KEY=/data/selfhost.key
