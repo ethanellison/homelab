@@ -43,7 +43,7 @@ services:
       retries: 3
 
   n8n:
-    image: docker.n8n.io/n8nio/n8n:2.1.0
+    image: docker.n8n.io/n8nio/n8n:2.2.2
     restart: always
     container_name: n8n
     network_mode: service:ts-n8n
