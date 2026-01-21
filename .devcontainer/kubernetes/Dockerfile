@@ -1,4 +1,4 @@
-FROM ../../base.Dockerfile
+FROM ../base.Dockerfile
 
 # Install Kubernetes-specific features
 RUN su vscode -c "devcontainer features install 'ghcr.io/devcontainers/features/kubectl-helm-minikube:1'"
