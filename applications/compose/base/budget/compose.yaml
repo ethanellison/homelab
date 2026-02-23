@@ -1,30 +1,29 @@
 services:
-  ts-budget:
-    image: tailscale/tailscale:latest
-    container_name: ts-budget
-    hostname: budget
-    environment:
-      - TS_AUTHKEY=${TS_AUTHKEY}
-      - TS_EXTRA_ARGS=--advertise-tags=tag:container
-      - TS_SERVE_CONFIG=/config/budget.json
-      - TS_STATE_DIR=/var/lib/tailscale
-      - TS_USERSPACE=false
-    volumes:
-      - /opt/config/budget:/config
-      - /opt/ts-budget/state:/var/lib/tailscale
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - net_admin
-    restart: unless-stopped
+  # ts-budget:
+  #   image: tailscale/tailscale:latest
+  #   container_name: ts-budget
+  #   hostname: budget
+  #   environment:
+  #     - TS_AUTHKEY=${TS_AUTHKEY}
+  #     - TS_EXTRA_ARGS=--advertise-tags=tag:container
+  #     - TS_SERVE_CONFIG=/config/budget.json
+  #     - TS_STATE_DIR=/var/lib/tailscale
+  #     - TS_USERSPACE=false
+  #   volumes:
+  #     - /opt/config/budget:/config
+  #     - /opt/ts-budget/state:/var/lib/tailscale
+  #   devices:
+  #     - /dev/net/tun:/dev/net/tun
+  #   cap_add:
+  #     - net_admin
+  #   restart: unless-stopped
   budget:
     image: docker.io/actualbudget/actual-server:26.2.1
     container_name: budget
-    network_mode: service:ts-budget
-    # ports:
-    #   # This line makes Actual available at port 5006 of the device you run the server on,
-    #   # i.e. http://localhost:5006. You can change the first number to change the port, if you want.
-    #   - "5006:5006"
+    ports:
+      # This line makes Actual available at port 5006 of the device you run the server on,
+      # i.e. http://localhost:5006. You can change the first number to change the port, if you want.
+      - "5006:5006"
     environment:
       # Uncomment any of the lines below to set configuration options.
       # - ACTUAL_HTTPS_KEY=/data/selfhost.key
@@ -49,3 +48,26 @@ services:
     restart: unless-stopped
     depends_on:
       - ts-budget
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: budget-tunnel
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.1'
+          memory: 32M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
+    depends_on:
+      - budget
+    environment:
+      - CLOUDFLARE_TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
