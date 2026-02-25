@@ -54,29 +54,19 @@ validate_deployment_type() {
 }
 
 deploy_compose() {
-  local env_path="${REPO_ROOT}/applications/compose/environments/${ENVIRONMENT}"
-  local compose_file="${env_path}/docker-compose.yaml"
-  local env_file="${env_path}/.env"
+  local deploy_script="${SCRIPT_DIR}/deploy-compose.sh"
 
-  if [ ! -f "$compose_file" ]; then
-    print_warning "No docker-compose.yaml found for environment: ${ENVIRONMENT}"
+  if [ ! -f "$deploy_script" ]; then
+    print_warning "deploy-compose.sh not found at: ${deploy_script}"
     exit 1
   fi
 
-  # Load environment variables if they exist
-  if [ -f "$env_file" ]; then
-    print_message "Loading environment variables from ${env_file}"
-    set -o allexport
-    source "$env_file"
-    set +o allexport
+  if [ -z "${HOMELAB_ENV_FILE:-}" ] && [ "$ENVIRONMENT" = "local" ]; then
+    export HOMELAB_ENV_FILE="${REPO_ROOT}/applications/compose/environments/local/.env"
   fi
 
   print_message "Deploying Docker Compose services for environment: ${ENVIRONMENT}"
-  docker compose -f "$compose_file" pull
-  docker compose -f "$compose_file" up -d --remove-orphans
-
-  print_message "Verifying deployment"
-  docker compose -f "$compose_file" ps
+  bash "$deploy_script" "$ENVIRONMENT" up
 }
 
 deploy_kubernetes() {
