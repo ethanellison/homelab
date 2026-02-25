@@ -152,5 +152,8 @@ jobs:
             chmod +x scripts/**/*.sh
             ./scripts/setup/init-dev-environment.sh docker
 
+            # Bring down the existing project to ensure a clean state before pulling and starting
+            HOMELAB_ENV_FILE="$TEMP_ENV_FILE" ./scripts/deploy/deploy-compose.sh vps down
+
             # Deploy using the securely decrypted environment file
             HOMELAB_ENV_FILE="$TEMP_ENV_FILE" ./scripts/deploy/deploy-compose.sh vps up'
