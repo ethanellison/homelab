@@ -1,0 +1,16 @@
+services:
+  pocket-id:
+    image: ghcr.io/pocket-id/pocket-id:latest
+    container_name: pocket-id
+    restart: unless-stopped
+    environment:
+      - PUBLIC_APP_URL=https://${AUTH_DOMAIN}
+      - TRUST_PROXY=true
+    volumes:
+      - /opt/pocket-id/data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1411/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

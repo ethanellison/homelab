@@ -102,37 +102,55 @@ jobs:
           echo "Deploying services: $SERVICES"
 
           # 2. Use SSH and pass the services list as an environment variable to the remote shell
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@srv715735.dzo-byzantine.ts.net 'set -euo pipefail
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=accept-new root@srv715735.dzo-byzantine.ts.net 'set -euo pipefail
             echo "✅ Connected to host and preparing secrets"
-            
-            SERVICES="'"$SERVICES"'"
-            TEMP_ENV_FILE="/tmp/homelab-secrets-$(date +%s%N).env"
-            
-            # Base CI secrets
-            gpg --quiet --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -d ~/.password-store/github/ci.gpg > "$TEMP_ENV_FILE"
-            chmod 600 "$TEMP_ENV_FILE"  # Apply secure permissions immediately
 
-            # Service-specific secrets
+            SERVICES="'"$SERVICES"'"
+            PASSWORD_STORE_DIR="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+
+            # Create secure temp files for the env bundle and the GPG passphrase
+            TEMP_ENV_FILE="$(mktemp /tmp/homelab-secrets.XXXXXXXX.env)"
+            GPG_PASSPHRASE_FILE="$(mktemp /tmp/homelab-gpg-passphrase.XXXXXXXX)"
+            chmod 600 "$TEMP_ENV_FILE" "$GPG_PASSPHRASE_FILE"
+
+            # Guarantee cleanup of both temp files even if the script exits early
+            trap "rm -f \"$TEMP_ENV_FILE\" \"$GPG_PASSPHRASE_FILE\"" EXIT
+
+            # Write passphrase via printf to avoid leaking it in process args
+            printf "%s" "${{ secrets.GPG_PASSPHRASE }}" > "$GPG_PASSPHRASE_FILE"
+
+            # Ensure gpg-agent allows loopback pinentry (required for non-interactive symmetric decrypt)
+            mkdir -p "$HOME/.gnupg"
+            chmod 700 "$HOME/.gnupg"
+            touch "$HOME/.gnupg/gpg-agent.conf"
+            chmod 600 "$HOME/.gnupg/gpg-agent.conf"
+            if ! grep -qs "^allow-loopback-pinentry$" "$HOME/.gnupg/gpg-agent.conf"; then
+              printf "%s\n" "allow-loopback-pinentry" >> "$HOME/.gnupg/gpg-agent.conf"
+            fi
+            gpgconf --launch gpg-agent || true
+            gpgconf --reload gpg-agent || true
+
+            # Tell pass to forward loopback + passphrase-file to gpg (keeps passphrase out of ps output)
+            export PASSWORD_STORE_GPG_OPTS="--batch --yes --quiet --pinentry-mode loopback --passphrase-file $GPG_PASSPHRASE_FILE"
+
+            # Base CI secrets
+            pass show github/ci > "$TEMP_ENV_FILE"
+
+            # Service-specific secrets (naming convention: homelab/vps/<service>)
             for SERVICE in $SERVICES; do
-              # We use a naming convention: ~/.password-store/homelab/vps/SERVICE_NAME.gpg
-              SECRET_PATH="$HOME/.password-store/homelab/vps/${SERVICE}.gpg"
-              # Check for file existence before attempting to decrypt
-              if [ -f "$SECRET_PATH" ]; then
+              if [ -f "$PASSWORD_STORE_DIR/homelab/vps/${SERVICE}.gpg" ]; then
                 echo "Decrypting secrets for service: ${SERVICE}"
-                gpg --quiet --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -d "$SECRET_PATH" >> "$TEMP_ENV_FILE"
-                echo "" >> "$TEMP_ENV_FILE" # Ensure a newline after decryption
+                pass show "homelab/vps/${SERVICE}" >> "$TEMP_ENV_FILE"
+                printf "\n" >> "$TEMP_ENV_FILE"
               else
-                echo "No specific secret found for service: ${SERVICE} at ${SECRET_PATH}"
+                echo "No specific secret found for service: ${SERVICE}"
               fi
             done
-            
+
             cd /opt/homelab
             git pull origin main
             chmod +x scripts/**/*.sh
             ./scripts/setup/init-dev-environment.sh docker
 
             # Deploy using the securely decrypted environment file
-            HOMELAB_ENV_FILE="$TEMP_ENV_FILE" ./scripts/deploy/tmp-deploy.sh vps up
-
-            # Securely remove the temporary environment file
-            rm -f "$TEMP_ENV_FILE"'
+            HOMELAB_ENV_FILE="$TEMP_ENV_FILE" ./scripts/deploy/deploy-compose.sh vps up'
