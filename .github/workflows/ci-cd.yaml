@@ -102,7 +102,7 @@ jobs:
           echo "Deploying services: $SERVICES"
 
           # 2. Use SSH and pass the services list as an environment variable to the remote shell
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@srv715735.dzo-byzantine.ts.net 'set -euo pipefail
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=accept-new root@srv715735.dzo-byzantine.ts.net 'set -euo pipefail
             echo "✅ Connected to host and preparing secrets"
             
             SERVICES="'"$SERVICES"'"
@@ -132,7 +132,7 @@ jobs:
             ./scripts/setup/init-dev-environment.sh docker
 
             # Deploy using the securely decrypted environment file
-            HOMELAB_ENV_FILE="$TEMP_ENV_FILE" ./scripts/deploy/tmp-deploy.sh vps up
+            HOMELAB_ENV_FILE="$TEMP_ENV_FILE" ./scripts/deploy/deploy-compose.sh vps up
 
             # Securely remove the temporary environment file
             rm -f "$TEMP_ENV_FILE"'
