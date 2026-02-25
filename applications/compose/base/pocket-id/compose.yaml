@@ -4,7 +4,7 @@ services:
     container_name: pocket-id
     restart: unless-stopped
     environment:
-      - PUBLIC_APP_URL=https://${AUTH_DOMAIN}
+      - APP_URL=https://${AUTH_DOMAIN}
       - TRUST_PROXY=true
       - ENCRYPTION_KEY=${POCKET_ID_ENCRYPTION_KEY}
     volumes:
