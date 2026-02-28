@@ -6,7 +6,7 @@ x-common-config: &common-config
 services:
   paperless:
     <<: *common-config
-    image: ghcr.io/paperless-ngx/paperless-ngx:2.18.4
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.20.9
     depends_on:
       - redis
     volumes:
