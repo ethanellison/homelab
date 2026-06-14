@@ -71,9 +71,6 @@ jobs:
       - name: Install yq
         run: |
           sudo apt-get update && sudo apt-get install -y yq
-      - name: Login to GitHub Container Registry
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Deploy to VPS
         env:
           HOST: srv715735.dzo-byzantine.ts.net
@@ -91,7 +88,7 @@ jobs:
           # 2. Use SSH and pass the services list as an environment variable to the remote shell
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=accept-new root@srv715735.dzo-byzantine.ts.net 'set -euo pipefail
             echo "✅ Connected to host and preparing secrets"
-
+            
             SERVICES="'"$SERVICES"'"
             PASSWORD_STORE_DIR="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
 
@@ -138,7 +135,8 @@ jobs:
             git pull origin main
             chmod +x scripts/**/*.sh
             ./scripts/setup/init-dev-environment.sh docker
-
+            # Log in to GHRC
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             # Bring down the existing project to ensure a clean state before pulling and starting
             HOMELAB_ENV_FILE="$TEMP_ENV_FILE" ./scripts/deploy/deploy-compose.sh vps down
 
