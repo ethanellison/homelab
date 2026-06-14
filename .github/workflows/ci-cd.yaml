@@ -71,7 +71,9 @@ jobs:
       - name: Install yq
         run: |
           sudo apt-get update && sudo apt-get install -y yq
-
+      - name: Login to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Deploy to VPS
         env:
           HOST: srv715735.dzo-byzantine.ts.net
