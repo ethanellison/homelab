@@ -10,21 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-
+     
       - name: Validate Kubernetes manifests
         run: |
-          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
-          ./kustomize version
-
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash -s -- -b /usr/local/bin
+          kustomize version
+          
           # Validate Kubernetes manifests
           echo "Validating infrastructure manifests..."
-          ./kustomize build infrastructure/kubernetes/base
-
+          kustomize build infrastructure/kubernetes/base
+          
           echo "Validating application manifests..."
-          # ./kustomize build applications/kubernetes/base
-
+          kustomize build applications/kubernetes/base
+          
           # Add more validation steps as needed
-
+          
       - name: Validate Docker Compose files
         run: |
           # Install yq
