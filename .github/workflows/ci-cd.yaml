@@ -1,6 +1,9 @@
 name: CI/CD Pipeline
 
 on:
+  merge_group:
+    branches:
+      - main
   pull_request:
     branches: [main]
   workflow_dispatch: {}
