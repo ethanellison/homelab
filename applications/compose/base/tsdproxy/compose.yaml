@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   tsdproxy:
-    image: almeidapaulopt/tsdproxy:2
+    image: almeidapaulopt/tsdproxy:3
     # environment:
     #     TSDPROXY_AUTH: ${TSDPROXY_AUTH}
     volumes:
